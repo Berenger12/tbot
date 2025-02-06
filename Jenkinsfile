@@ -5,10 +5,11 @@ pipeline {
         BOT_TOKEN = credentials('telegram-bot-token')
     }
 
+    stages {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("qrgram")
+                   sh 'make build'
                 }
             }
         }
@@ -16,9 +17,8 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    dockerImage.inside {
-                        sh 'pytest tests'
-                    }
+                    
+                        sh 'make tests'
                 }
             }
         }
@@ -26,7 +26,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    dockerImage.run('-d --name qrgram-bot')
+                    
+                    sh 'make deploy'
                 }
             }
         }
